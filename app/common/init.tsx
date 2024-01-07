@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import LocalDB from "../localdb/localdb";
 import { HomePage } from "../home/home";
 import { LoginPage } from "../auth/login";
@@ -12,7 +12,13 @@ import { whoamiURL } from "./url";
 import { login } from "../auth/auth";
 
 
-
+const styles = StyleSheet.create({
+  container: {
+		flex: 1,
+		alignItems: 'center',
+		justifyContent: 'center',
+  },
+});
 
 export function InitViews(){
 
@@ -60,9 +66,9 @@ export function InitViews(){
 
 	setTimeout(() => Logger.log('Loading account...'), 1);
 
-	return <View>
+	return <View style={(loading || !loggedIn) ? styles.container : {}}>
 		{
-			loading ? (<ActivityIndicator />) : (loggedIn ? <HomePage /> : <LoginPage />)
+			loading ? (<View><ActivityIndicator /></View>) : (loggedIn ? <HomePage /> : <LoginPage />)
 		}
 	</View>
 }
