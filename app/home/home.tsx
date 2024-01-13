@@ -8,6 +8,7 @@ import { User } from "./user";
 import { UserChat } from "./chat";
 import { addChats } from "./slice";
 import LocalDB from "../localdb/localdb";
+import { setChatBox } from "../chatbox/slice";
 
 const styles = StyleSheet.create({
 	container: {
@@ -39,8 +40,7 @@ export function HomePage(){
 						username: user.username
 					},
 					lastMessage: {
-						time: lastMessage.time,
-						content: lastMessage.content
+						...lastMessage
 					}
 				})));
 			}
@@ -55,6 +55,7 @@ export function HomePage(){
 					description={chat.lastMessage?.content!}
 					left={props => <Avatar.Image size={48} source={{ uri: avatarUrl(chat.user.username) }} />}
 					key={chat.user.username}
+					onTouchStart={() => dispatch(setChatBox(chat.user?.username))}
 				/>) : <ActivityIndicator />
 			}
 		</List.Section>

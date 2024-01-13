@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import authSlice from '../auth/slice';
 import loggerSlice from '../logger/slice';
 import chatsListSlice from '../home/slice';
+import chatBoxesListSlice from '../chatbox/slice';
 
 const store = configureStore({
   reducer: {
     auth: authSlice,
 		logger: loggerSlice,
-		chats: chatsListSlice
+		chats: chatsListSlice,
+    chatbox: chatBoxesListSlice
   },
 	middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

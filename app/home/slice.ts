@@ -9,7 +9,7 @@ const initialState : {
 }
 
 export const chatsListSlice = createSlice({
-  name: 'logger',
+  name: 'chats',
   initialState,
   reducers: {
 		addChats(state, action: PayloadAction<UserChat>){

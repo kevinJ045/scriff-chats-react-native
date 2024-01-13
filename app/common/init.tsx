@@ -10,6 +10,7 @@ import { ActivityIndicator } from "react-native-paper";
 import { Logger } from "../logger/logger";
 import { whoamiURL } from "./url";
 import { login } from "../auth/auth";
+import { ChatBoxPage } from "../chatbox/chatbox";
 
 
 const styles = StyleSheet.create({
@@ -26,6 +27,8 @@ export function InitViews(){
 
 	const [loading, setLoading] = useState(true);
 	const loggedIn = useSelector((state: RootState) => state.auth.logged_in);
+	const currentChatBox = useSelector((state: RootState) => state.chatbox.currentChatBox);
+
 
 	LocalDB.get('login.token').then(async (token) => {
 		if(token){
@@ -41,6 +44,12 @@ export function InitViews(){
 				save: true
 			})) && (setLoading(false),new Promise((r) => {Logger.log(''), r(null)}).catch(e => null));
 
+			const resetAll = () => {
+				LocalDB.rm('login.username');
+				LocalDB.rm('login.token');
+				setLoading(false);
+			}
+
 			fetch(whoamiURL, {
 				headers: {
 					token
@@ -50,7 +59,7 @@ export function InitViews(){
 			.then((musername: string) => {
 				if(musername == '401'){
 					Logger.log('Session terminated... logging in again');
-					login(username, password, (data) => (token = data.token) && done());
+					login(username, password, (data) => (token = data.token) && done(), (error?: string) => error == "password_unmatched" ? resetAll() : null);
 				} else {
 					Logger.log('Session active... Continue launch');
 					done();
@@ -68,7 +77,7 @@ export function InitViews(){
 
 	return <View style={(loading || !loggedIn) ? styles.container : {}}>
 		{
-			loading ? (<View><ActivityIndicator /></View>) : (loggedIn ? <HomePage /> : <LoginPage />)
+			loading ? (<View><ActivityIndicator /></View>) : (loggedIn ? (currentChatBox ? <ChatBoxPage username={currentChatBox} /> :<HomePage />) : <LoginPage />)
 		}
 	</View>
 }

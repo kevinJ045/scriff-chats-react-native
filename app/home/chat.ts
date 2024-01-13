@@ -1,9 +1,5 @@
+import { Message } from "../chatbox/message";
 import { User } from "./user"
-
-export type Message = {
-	time?: string;
-	content?: string;
-}
 
 export type UserChatLike = {
 	user?: User;
@@ -12,7 +8,16 @@ export type UserChatLike = {
 
 export class UserChat {
 	user: User = new User();
-	lastMessage: Message = {};
+	lastMessage: Message = {
+		content: "",
+		time: 0,
+		recipient: "",
+		id: "",
+		username: "",
+		special: null,
+		modified: false,
+		read: false
+	};
 
 	constructor(chatlike: UserChatLike = {}){
 		if(chatlike){

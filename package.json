@@ -13,6 +13,8 @@
     "@reduxjs/toolkit": "^2.0.1",
     "@rneui/base": "^4.0.0-rc.7",
     "@rneui/themed": "^4.0.0-rc.8",
+    "axios": "^1.6.5",
+    "crypto": "^1.0.1",
     "expo": "~49.0.15",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
@@ -23,7 +25,9 @@
     "react-native-web": "^0.19.10",
     "react-redux": "^9.0.4",
     "redux": "^5.0.1",
-    "redux-toolkit": "^1.1.2"
+    "redux-toolkit": "^1.1.2",
+    "scriff": "^1.0.0",
+    "socket.io-client": "^4.7.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
