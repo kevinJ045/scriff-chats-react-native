@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "scriff-chats",
+    "name": "Scriff Chats",
     "slug": "scriff-chats",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.makano.scriff.chats"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "a3e71f8c-b607-4640-b9dd-3afbddecc6f7"
+      }
     }
   }
 }

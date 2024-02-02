@@ -6,9 +6,10 @@ import { getFrom } from "../common/req";
 import { addChatBox, setChatBox } from "./slice";
 import { avatarUrl, baseURL, userProfileURL } from "../common/url";
 import { User } from "../home/user";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Message } from "./message";
 import { socketConnect } from "../common/socket";
+import { GiftedChat, IMessage } from 'react-native-gifted-chat'
 
 const styles = StyleSheet.create({
 	container: {
@@ -90,22 +91,56 @@ export function ChatBoxPage({username}: { username: string }){
 		}
   }, [listening, loaded, username, token, currentChatBoxMessages]);
 
-	const [message, setMessage] = useState('');
 
-	const handleSend = () => {
+	const handleSend = (message: string) => {
 		let m = message;
 		if(m.trim() == '') return;
-		setMessage('');
 		socket.emit('chat:new', {
 			content: m,
 			recipient: username
 		});
 	}
 
+	const onSend = useCallback((messages: IMessage[] = []) => {
+		// handleSend();
+		console.log(messages);
+		messages.forEach((message) => {
+			handleSend(message.text);
+		});
+		// dispatch(addChatBox({
+		// 	username: user.username,
+		// 	chats: []
+		// }))
+    // GiftedChat.append(messages.slice(0, messages.length-2), messages);
+  }, [])
+
 	const flatListRef = useRef(null);
 	const scrollToBottom = () => {
     (flatListRef.current as (FlatList | null))?.scrollToOffset({ offset: 0, animated: true });
   };
+
+	const getUserIndex = (username: string) => {
+		let index = Object.keys(currentChatBoxMessages).indexOf(user.username);
+		if(index < 0) index = Object.keys(currentChatBoxMessages).length*2 || 2;
+		return index+2;
+	}
+
+	function removeDuplicates(arr: any[], key: string) {
+		return arr.filter((item, index, self) =>
+			index === self.findIndex((t) => t[key] === item[key])
+		);
+	}
+
+	const convertMessages = (messages: Message[]) => removeDuplicates(messages.map(item => ({
+		_id: item.id,
+		text: item.content,
+		createdAt: new Date(item.time),
+		user: {
+			_id: item.username,
+			name: item.username == me ? me : user.name,
+			avatar: avatarUrl(item.username)
+		}
+	})), '_id').reverse();
 
 	return <View style={loaded ? styles.container : styles.containerCenteredElements}>
 		{
@@ -122,31 +157,14 @@ export function ChatBoxPage({username}: { username: string }){
 					<Appbar.Action icon="dots-vertical" onPress={() => {}} />
 				</Appbar.Header>
 
-				<FlatList
-					ref={flatListRef}
-					data={(currentChatBoxMessages[username] || [])}
-					keyExtractor={(item, index) => item.id.toString()+index}
-					onContentSizeChange={scrollToBottom}
-        	onLayout={scrollToBottom}
-					renderItem={({ item }) => (
-						<View style={styles.messageItem}>
-							<Text>{item.content}</Text>
-						</View>
-					)}
+				<GiftedChat
+					messages={convertMessages(currentChatBoxMessages[user.username])}
+					onSend={messages => onSend(messages)}
+					user={{
+						_id: me
+					}}
 				/>
 
-				<Appbar style={styles.bottom}>
-					<TextInput
-						style={styles.textInput}
-						placeholder="Type your message..."
-						value={message}
-						onChangeText={(text) => setMessage(text)}
-						activeOutlineColor="transparent"
-						outlineColor="transparent"
-						multiline
-					/>
-					<Appbar.Action icon="send" onPress={handleSend} />
-				</Appbar>
 			</> : <ActivityIndicator size={36} />
 		}
 	</View>;
